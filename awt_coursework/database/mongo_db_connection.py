@@ -8,12 +8,16 @@ class MongoDBConnection:
 
     def __new__(self):
         if not self._instance:
-            print(f'Initiating Mongodb connection using string: {connection_string}')
-            self._instance = super().__new__(self)
-            self._instance.client = pymongo.MongoClient(connection_string)
-            print(f'Initializing Database {db_name}')
-            self._instance.database = self._instance.client[db_name]
-            print("Connnection established succesfully")
+            try:
+                print(f'Initiating Mongodb connection using string: {connection_string}')
+                self._instance = super().__new__(self)
+                self._instance.client = pymongo.MongoClient(connection_string, serverSelectionTimeoutMS=5000)
+                self._instance.client.server_info()
+                print(f'Initializing Database {db_name}')
+                self._instance.database = self._instance.client[db_name]
+                print("Connnection established succesfully")
+            except:
+                raise ValueError("DB connection string is not valid")
         return self._instance
 
     def get_database(self):
