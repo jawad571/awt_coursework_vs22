@@ -1,0 +1,9 @@
+attrs==23.1.0
+dnspython==2.4.2
+jsonschema==4.20.0
+jsonschema-specifications==2023.11.1
+pip==22.0.4
+pymongo==4.6.0
+referencing==0.31.0
+rpds-py==0.13.1
+setuptools==58.1.0
