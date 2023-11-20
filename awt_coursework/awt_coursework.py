@@ -220,7 +220,7 @@ class KanbanBoard:
         add_button = ttk.Button(entry_frame, text="Add Task", command=self.add_task)
         add_button.grid(row=3, column=1, pady=(5, 0), sticky=tk.W)
 
-        self.create_status_box(entry_frame, tasks_controller.get_db_status(), 3, 1)
+        self.create_status_box(entry_frame, tasks_controller.get_db_status(), 4, 1)
 
     def add_task(self):
         title = self.title_entry.get()
