@@ -60,6 +60,8 @@ class TaskCard(tk.Toplevel):
 class KanbanBoard:
     def __init__(self, root):
 
+        self.username = None
+
         # Initialize the frame
         self.root = root
         self.root.title("Task Details")
@@ -87,14 +89,14 @@ class KanbanBoard:
         self.login_status_label = ttk.Label(self.alert_window, text="")
         self.login_status_label.grid(row=0, column=0, padx=(0, 5), sticky=tk.W)
 
-        userId_label = ttk.Label(self.alert_window, text="Enter UserID:")
-        userId_label.grid(row=1, column=0, padx=(0, 5), sticky=tk.W)
+        username_label = ttk.Label(self.alert_window, text="Enter username:")
+        username_label.grid(row=1, column=0, padx=(0, 5), sticky=tk.W)
 
         password_label = ttk.Label(self.alert_window, text="Enter Password:")
         password_label.grid(row=2, column=0, padx=(0, 5), pady=(5, 0), sticky=tk.W)
 
-        self.userId_entry = ttk.Entry(self.alert_window, width=30)
-        self.userId_entry.grid(row=1, column=1, padx=(0, 5), pady=(5, 0), sticky=tk.W)
+        self.username_entry = ttk.Entry(self.alert_window, width=30)
+        self.username_entry.grid(row=1, column=1, padx=(0, 5), pady=(5, 0), sticky=tk.W)
 
         self.password_entry = ttk.Entry(self.alert_window, width=30)
         self.password_entry.grid(row=2, column=1, padx=(0, 5), pady=(5, 0), sticky=tk.W)
@@ -102,16 +104,36 @@ class KanbanBoard:
         login_button = ttk.Button(self.alert_window, text="Login", command=self.post_login_attempt)
         login_button.grid(row=3, column=1, pady=(5, 0), sticky=tk.W)
 
+        signup_button = ttk.Button(self.alert_window, text="Signup", command=self.post_signup_attempt)
+        signup_button.grid(row=4, column=1, pady=(5, 0), sticky=tk.W)
+        
     def post_login_attempt(self):
-        userId = self.userId_entry.get().strip()
+        username = self.username_entry.get().strip()
         password = self.password_entry.get().strip()
-        if auth.login(userId, password):
+        if auth.login(username, password):
             print("Login Sucessful")
             self.alert_window.destroy()
 
             # get all tasks of user
-            self.userId = userId
-            self.tasks = tasks_controller.get_all_tasks(self.userId)
+            self.username = username
+            self.tasks = tasks_controller.get_all_tasks(self.username)
+
+            # Create the table
+            self.create_board()
+            self.create_task_entry()
+        else:
+            self.login_status_label.configure(text="Incorrect Details. Username: admin, password: admin for testing")
+
+    def post_signup_attempt(self):
+        username = self.username_entry.get().strip()
+        password = self.password_entry.get().strip()
+        if auth.signup(username, password):
+            print("Signup Sucessful")
+            self.alert_window.destroy()
+
+            # get all tasks of user
+            self.username = username
+            self.tasks = tasks_controller.get_all_tasks(self.username)
 
             # Create the table
             self.create_board()
@@ -155,7 +177,7 @@ class KanbanBoard:
             label.bind('<Button-1>', lambda event, task_object=task: self.open_card(task_object))
 
     def update_state(self,):
-        self.tasks = tasks_controller.get_all_tasks(self.userId)        
+        self.tasks = tasks_controller.get_all_tasks(self.username)        
         self.create_board()
 
     def open_card(self, task_object):
@@ -180,20 +202,23 @@ class KanbanBoard:
         entry_frame = ttk.Frame(self.root)
         entry_frame.grid(row=len(self.tasks) + 1, column=0, columnspan=len(self.columns), pady=10, padx=10)
 
+        welcome_label = ttk.Label(entry_frame, text=f'Welcome {self.username}')
+        welcome_label.grid(row=0, column=0, padx=(0, 5), sticky=tk.W)
+
         title_label = ttk.Label(entry_frame, text="New Task:")
-        title_label.grid(row=0, column=0, padx=(0, 5), sticky=tk.W)
+        title_label.grid(row=1, column=0, padx=(0, 5), sticky=tk.W)
 
         description_label = ttk.Label(entry_frame, text="Description:")
-        description_label.grid(row=1, column=0, padx=(0, 5), pady=(5, 0), sticky=tk.W)
+        description_label.grid(row=2, column=0, padx=(0, 5), pady=(5, 0), sticky=tk.W)
 
         self.title_entry = ttk.Entry(entry_frame, width=30)
-        self.title_entry.grid(row=0, column=1, padx=(0, 5), pady=(5, 0), sticky=tk.W)
+        self.title_entry.grid(row=1, column=1, padx=(0, 5), pady=(5, 0), sticky=tk.W)
 
         self.description_entry = ttk.Entry(entry_frame, width=30)
-        self.description_entry.grid(row=1, column=1, padx=(0, 5), pady=(5, 0), sticky=tk.W)
+        self.description_entry.grid(row=2, column=1, padx=(0, 5), pady=(5, 0), sticky=tk.W)
 
         add_button = ttk.Button(entry_frame, text="Add Task", command=self.add_task)
-        add_button.grid(row=2, column=1, pady=(5, 0), sticky=tk.W)
+        add_button.grid(row=3, column=1, pady=(5, 0), sticky=tk.W)
 
         self.create_status_box(entry_frame, tasks_controller.get_db_status(), 3, 1)
 
@@ -202,7 +227,7 @@ class KanbanBoard:
         description = self.description_entry.get()
         if title and description:
             # Add the task to the "Backlog" column by default
-            tasks_controller.create_task(self.userId, {
+            tasks_controller.create_task(self.username, {
                 "title": title,
                 "description": description,
                 "status": "backlog"

@@ -39,6 +39,7 @@ class Users:
                 "username": username,
                 "password": password
             }
+            self.collection.insert_one(payload)
         else:
             self.temp_db.append({
                 "_id": self.id_counter,

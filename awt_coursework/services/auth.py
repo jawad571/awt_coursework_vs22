@@ -3,8 +3,8 @@ from repositories.users import Users as UsersRepository
 
 class Authentication:
     def __init__(self):
-        users_repository = UsersRepository()
-        self.users = [user['username'] for user in list(users_repository.get_all_users())]
+        self.users_repository = UsersRepository()
+        self.users = [user['username'] for user in list(self.users_repository.get_all_users())]
 
     def signup(self, username, password):
         if username in self.users:
@@ -14,7 +14,7 @@ class Authentication:
         # Hash the password before storing it
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-        users_repository.create_user(username, hashed_password)
+        self.users_repository.create_user(username, hashed_password)
         print("Signup successful. Please login.")
         return True
 
@@ -27,9 +27,10 @@ class Authentication:
             print("Invalid credentials. Please check your username and password.")
             return False
 
-        user = self.get_user(username)
+        user = list(self.users_repository.get_user(username))[0]
 
         hashed_password = user['password']
+        print(hashed_password)
 
         # Verify the password by checking the hashed password
         if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
