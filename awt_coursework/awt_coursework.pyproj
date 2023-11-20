@@ -11,6 +11,8 @@
     <OutputPath>.</OutputPath>
     <Name>awt_coursework</Name>
     <RootNamespace>awt_coursework</RootNamespace>
+    <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
+    <InterpreterId>MSBuild|env1|$(MSBuildProjectFullPath)</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,7 +33,9 @@
     <Compile Include="database\validate.py" />
     <Compile Include="database\__init__.py" />
     <Compile Include="repositories\tasks.py" />
+    <Compile Include="repositories\users.py" />
     <Compile Include="repositories\__init__.py" />
+    <Compile Include="services\auth.py" />
     <Compile Include="services\tasks.py" />
     <Compile Include="services\__init__.py" />
   </ItemGroup>
@@ -72,6 +76,17 @@
     <Content Include="services\__pycache__\tasks.cpython-39.pyc" />
     <Content Include="services\__pycache__\__init__.cpython-38.pyc" />
     <Content Include="services\__pycache__\__init__.cpython-39.pyc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env1\">
+      <Id>env1</Id>
+      <Version>3.9</Version>
+      <Description>env1 (Python 3.9 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

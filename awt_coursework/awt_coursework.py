@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from controllers.tasks import Tasks as tasks_controller
+from services.auth import Authentication as auth
+
+auth = auth()
 
 class TaskCard(tk.Toplevel):
     def __init__(self, root, task, status_change_callback, delete_task_callback):
@@ -102,7 +105,7 @@ class KanbanBoard:
     def post_login_attempt(self):
         userId = self.userId_entry.get().strip()
         password = self.password_entry.get().strip()
-        if userId == '12' and password == '1234':
+        if auth.login(userId, password):
             print("Login Sucessful")
             self.alert_window.destroy()
 
@@ -114,7 +117,7 @@ class KanbanBoard:
             self.create_board()
             self.create_task_entry()
         else:
-            self.login_status_label.configure(text="Incorrect Details")
+            self.login_status_label.configure(text="Incorrect Details. Username: admin, password: admin for testing")
 
     def show_alert(self, message):
         alert_window = tk.Toplevel(self.root)

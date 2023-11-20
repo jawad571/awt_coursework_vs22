@@ -30,7 +30,7 @@ class Tasks:
     
     def get_task(self, task_id):
         if self._db_flag:
-            result = self.collection.find({task_id: task_id})
+            result = self.collection.find({"_id": task_id})
             return result
         else:
             return [i for i in self.temp_db if i['_id'] == task_id]
