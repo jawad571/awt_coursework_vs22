@@ -122,7 +122,7 @@ class KanbanBoard:
             self.create_board()
             self.create_task_entry()
         else:
-            self.login_status_label.configure(text="Incorrect Details. Username: admin, password: admin for testing")
+            self.login_status_label.configure(text="Incorrect Details. \nUsername: admin \npassword: admin for testing")
 
     def post_signup_attempt(self):
         username = self.username_entry.get().strip()
